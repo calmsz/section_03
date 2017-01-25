@@ -19,7 +19,12 @@ UPositionReport::UPositionReport()
 void UPositionReport::BeginPlay()
 {
 	Super::BeginPlay();
+	FString sObjectName = "";
+	FString sObjectPosition = "";
 
+	sObjectPosition = GetOwner()->GetActorLocation().ToString();
+	sObjectName = GetOwner()->GetName();
+	UE_LOG(LogTemp, Warning, TEXT("Position Report on duty on %s is at position %s"), *sObjectName, *sObjectPosition);
 	// ...
 	
 }
