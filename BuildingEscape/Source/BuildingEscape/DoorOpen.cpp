@@ -20,19 +20,19 @@ void UDoorOpen::BeginPlay()
 {
 	Super::BeginPlay();
 	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
+
+	// find the owner object as before
+	Owner = GetOwner();
 }
 
 void UDoorOpen::OpenDoor()
 {
-	// find the owner object as before
-	AActor* Owner = GetOwner();
+	Owner->SetActorRotation(FRotator(0.0f, OpenAngle, 0.0f));
+}
 
-	//access rotation
-	FRotator NewRotator = FRotator(0.0f, -60.0f, 0.0f);
-
-	//set the rotation
-	Owner->SetActorRotation(NewRotator);
-	
+void UDoorOpen::CloseDoor()
+{
+	Owner->SetActorRotation(FRotator(0.0f, 90.0f, 0.0f));
 }
 
 
@@ -44,9 +44,16 @@ void UDoorOpen::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompo
 	// Poll trigger volume everyframe
 	if (PressurePlate->IsOverlappingActor(ActorThatOpens))
 	{
-	// if the actor that opens is in the volume
+		// if the actor that opens is in the volume
 		OpenDoor();
+		LastTimeOpened = GetWorld()->GetTimeSeconds();
 	}
-
+	else
+	{
+		if (TimeToOpenTheDoor < (GetWorld()->GetTimeSeconds() - LastTimeOpened))
+		{
+			CloseDoor();
+		}
+	}	
 }
 
